@@ -2,11 +2,12 @@ import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import PokemonCard from "./PokemonCard";
 
-describe("", () => {
-  test("", () => {
-    render();
+describe("pokemon card", () => {
+  test("test pokemon card displays name(capiltalised), pokemon id & image", () => {
+    render(<PokemonCard name="bulbasaur" id="1"/>);
 
     expect(
-      screen.getByRole(),
+      screen.getByText("Bulbasaur"),
     ).toBeInTheDocument();
   });
+})

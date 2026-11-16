@@ -13,7 +13,7 @@ export default function App({ name, id }: PokemonProps) {
     return (
         <div>
 
-            <PokemonCard name="bulbasaur" id="1"/>
+            <PokemonCard name={name} id={id}/>
         </div>
     )
 
