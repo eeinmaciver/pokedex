@@ -1,15 +1,21 @@
-import { type PokemonProps } from "../PokemonCard/PokemonCard";
+import { type PokemonListItem } from "../../types";
 import PokemonCard from "../PokemonCard/PokemonCard";
+import idFromUrl from "../../lib/pokemon";
 
 interface gridProps {
-    pokemon: PokemonProps[];
+    pokemon: PokemonListItem[];
 }
 
+
+
 export default function PokemonGrid({ pokemon }: gridProps) {
+
+    
+
     return (
         <ul>
             {pokemon.map((poke) => (
-                <PokemonCard key={poke.id} name={poke.name} id ={poke.id}/>
+                <PokemonCard key={idFromUrl(poke.url)} name={poke.name} id ={idFromUrl(poke.url)}/>
             ))}
         </ul>
     );
