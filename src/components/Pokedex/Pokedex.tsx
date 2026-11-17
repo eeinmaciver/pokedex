@@ -10,7 +10,6 @@ export default function Pokedex() {
     if(error) return <p role="alert">{error}</p>
     if(pokeState.length === 0) return <p>No Pokemon...</p>
 
-
     return (
         <>
             <TypeSelect type={pokeType} onChange={setPokeType} />

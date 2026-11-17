@@ -23,11 +23,11 @@ export const getPokemonList = async (
   signal?: AbortSignal,
 ): Promise<PokemonListItem[]> => {
     if (query.type) {
-        const data = await apiGet<PokemonTypeAPIResponse>(`/type/${query.type}`, signal);
+        const data = await apiGet<PokemonTypeAPIResponse>(import.meta.env.VITE_API_URL,`/type/${query.type}`, signal);
         const pokemonData = data.pokemon.map((item) => item.pokemon) 
         return pokemonData
     }
-    const data = await apiGet<PokemonAPIResponse>('/pokemon?limit=20', signal);
+    const data = await apiGet<PokemonAPIResponse>(import.meta.env.VITE_API_URL, '/pokemon?limit=20', signal);
     return data.results
 }
     
