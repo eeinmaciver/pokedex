@@ -1,9 +1,10 @@
 import { usePokemonList } from "../../hooks/usePokemonList"
 import PokemonGrid from "../PokemonGrid/PokemonGrid"
+import TypeSelect from "../TypeSelect"
 
 export default function Pokedex() {
 
-    const  { pokeState, isLoading, error } = usePokemonList()
+    const  { pokeState, isLoading, error, pokeType, setPokeType } = usePokemonList()
     
     if(isLoading) return <p>Loading Pokemon...</p>
     if(error) return <p role="alert">{error}</p>
@@ -11,7 +12,10 @@ export default function Pokedex() {
 
 
     return (
-        <PokemonGrid pokemon={pokeState} />
+        <>
+            <TypeSelect type={pokeType} onChange={setPokeType} />
+            <PokemonGrid pokemon={pokeState} />
+        </>
     )
 
 };
