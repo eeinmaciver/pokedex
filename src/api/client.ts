@@ -6,6 +6,16 @@ export class ApiError extends Error {
     this.status = status;
   }
 }
+export class TeamError extends Error {
+  code: "full" | "duplicate" | "unreadable" | "unavailable";
+  constructor(message: string, code: TeamError["code"]) {
+    super(message);
+    this.name = "TeamError";
+    this.code = code
+  }
+}
+
+
 
 export const apiGet = async <T>(
   baseUrl: string,
@@ -20,31 +30,33 @@ export const apiGet = async <T>(
     return (await response.json()) as T;
 };
 
-// export const apiPost = async <T>(
-//   path: string,
-//   body: unknown
-// ): Promise<T> => {
-//   const response = await fetch(`${BASE_URL}${path}`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(body),
-//     });
+export const apiPost = async <T>(
+  baseUrl: string,
+  path: string,
+  body: unknown
+): Promise<T> => {
+  const response = await fetch(`${baseUrl}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    });
 
-//     if (!response.ok) {
-//         throw new ApiError(`Request failed with status ${response.status}`, response.status,);
-//     }
-//     return (await response.json()) as T;
-// };
+    if (!response.ok) {
+        throw new ApiError(`Request failed with status ${response.status}`, response.status,);
+    }
+    return (await response.json()) as T;
+};
 
-// export const apiDelete = async <T>(
-//   path: string,
-// ): Promise<T> => {
-//     const response = await fetch(`${BASE_URL}${path}`, {
-//     method: "DELETE",
-//     });
+export const apiDelete = async <T>(
+  baseUrl: string,
+  path: string,
+): Promise<T> => {
+    const response = await fetch(`${baseUrl}${path}`, {
+    method: "DELETE",
+    });
 
-//     if (!response.ok) {
-//         throw new ApiError(`Request failed with status ${response.status}`, response.status,);
-//     }
-//     return (await response.text()) as T;
-// };
+    if (!response.ok) {
+        throw new ApiError(`Request failed with status ${response.status}`, response.status,);
+    }
+    return (await response.text()) as T;
+};
