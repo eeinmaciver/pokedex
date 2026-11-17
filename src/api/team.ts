@@ -1,25 +1,30 @@
-import { apiGet } from "./client";
+import { apiDelete, apiGet, apiPost } from "./client";
+import { type NewTeamMember } from "../types";
 
-// export class TeamError extends Error {
-//   code: "full" | "duplicate" | "unreadable" | "unavailable";
-//   constructor(message: string, code: TeamError["code"]) { /* ... */ }
+
 
 import type { TeamMember } from "../types";
 
 
-export const getTeam = async (user_id: number): Promise<TeamMember[]> => {
-    const data = await apiGet<TeamMember[]>(import.meta.env.VITE_TEAM_API_URL ,`/public/users/${user_id}/team`);
-    return data
+export const getTeam = (user_id: number): Promise<TeamMember[]> => {
+    return apiGet<TeamMember[]>(import.meta.env.VITE_TEAM_API_URL ,`/public/users/${user_id}/team`);
+
 };
 
 
+export const addToTeam = (user_id: number, member: NewTeamMember): Promise<TeamMember> => {
 
+        return apiPost<TeamMember>(
+        import.meta.env.VITE_TEAM_API_URL,
+        `/public/users/${user_id}/team`,
+        member
+        )
 
+};
 
-
-// export const addToTeam = (member: NewTeamMember): Promise<TeamMember> => { /* ... */ };
-
-
-
-
-// export const removeFromTeam = (id: number): Promise<void> => { /* ... */ };
+export const removeFromTeam = (user_id: number, member_id: number): Promise<void> => {
+    return apiDelete<void>(
+        import.meta.env.VITE_TEAM_API_URL,
+        `/public/users/${user_id}/team/${member_id}`
+    )
+};

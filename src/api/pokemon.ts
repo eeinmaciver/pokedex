@@ -14,6 +14,11 @@ interface PokemonTypeAPIResponse {
     pokemon: PokemonTypeListItem[]
 }
 
+interface Pokemon {
+    name: string;
+    id: number
+}
+
 export interface PokemonQuery {
   type?: string;
 }
@@ -33,8 +38,13 @@ export const getPokemonList = async (
     
 
 
-// export const getPokemon = (
-//   nameOrId: string | number,
-//   signal?: AbortSignal,
-// ): Promise<Pokemon> => {
-// };
+export const getPokemon = async (
+  nameOrId: string | number,
+  signal?: AbortSignal,
+): Promise<PokemonListItem> => {
+    
+    const data = await apiGet<Pokemon>(import.meta.env.VITE_API_URL, `/pokemon/${nameOrId}`, signal)
+    const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${data.id}`
+    return {name: data.name, url: pokemonUrl}
+
+};
