@@ -6,7 +6,6 @@ export default function PokedexPage () {
 
     return (
         <div>
-            <NavLinks/>
             <Pokedex/>
         </div>
     )
