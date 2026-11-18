@@ -13,7 +13,7 @@ export default function SearchBox({ value, onChange, onSubmit }: Readonly<Search
       <input id="search" type="text" value={value} onChange={(event) => onChange(event.target.value)}/>
       {value !== "" && (<>
         <button type="button" className="btn" onClick={() => onSubmit(value)}>Submit</button>
-        <button type="button" className="btn" onClick={() => onSubmit("")}>Clear search</button></>
+        <button type="button" className="btn" onClick={() => onChange("")}>Clear search</button></>
       )}
     </div>
   );
