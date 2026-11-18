@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { type PokemonListItem } from "../types";
 import { getPokemon } from "../api/pokemon";
+import { type PokemonFetch } from "../api/pokemon";
 
 export function usePokemon(nameOrID: string | number) {
-    const [pokemon, setPokemon] = useState<PokemonListItem[]>([]);
+    const [pokemon, setPokemon] = useState<PokemonFetch[]>([])
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>();
     const [refetchCount, setRefetchCount] = useState(0);
@@ -27,7 +27,7 @@ export function usePokemon(nameOrID: string | number) {
             setError(null);
             try {
                 const data = await getPokemon(nameOrID)
-                setPokemon([data]);
+                setPokemon(data);
                 }
             catch (err) {
                 console.error("the error!", err)

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { type PokemonListItem } from "../types";
 import { getPokemon, getPokemonList } from "../api/pokemon";
+import { type PokemonFetch } from "../api/pokemon";
 
 export function usePokemonList() {
     const [pokeState, setPokeState] = useState<PokemonListItem[]>([]);
+    const [pokemon, setPokemon] = useState<PokemonFetch[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>();
     const [pokeType, setPokeType] = useState<string>("")
@@ -29,7 +31,9 @@ export function usePokemonList() {
             try {
                 if (pokeSearch) {
                     const data = await getPokemon(pokeSearch)
-                    setPokeState([data]);
+                    setPokemon(data);
+                    const pokemonData: PokemonListItem[] = [{name: pokemon[0].name, url: "https://pokeapi.co/api/v2/pokemon/"+pokemon[0].id }]
+                    setPokeState(pokemonData)
                 } else {
                 const data = await getPokemonList({type: pokeType});
                 setPokeState(data);}

@@ -8,13 +8,11 @@ export default function Layout () {
         <div>
             <header>
                 <h1>PokemonAPI</h1>
-                <nav>
                     <ul>
                         <li>
                             <NavLinks/>
                         </li>
                     </ul>
-                </nav>
             </header>
 
             <main>
