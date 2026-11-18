@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { type PokemonListItem } from "../types";
 import { getPokemon, getPokemonList } from "../api/pokemon";
 import { type PokemonFetch } from "../api/pokemon";
+import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router"
 
 export function usePokemonList() {
     const [pokeState, setPokeState] = useState<PokemonListItem[]>([]);
@@ -12,6 +14,11 @@ export function usePokemonList() {
     const [refetchCount, setRefetchCount] = useState(0);
     const [searchInput, setSearchInput] = useState<string | number>("");
     const [pokeSearch, setPokeSearch] = useState<string | number>("");
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState<true | false>(false);
+
+    const [searchParams, setSearchParams] =  useSearchParams();
+    const type = searchParams.get("type") ?? "all types";
 
     const refetch = () => {
         setRefetchCount((count) => count + 1);
@@ -23,6 +30,8 @@ export function usePokemonList() {
             setPokeSearch("");
         }
     };
+
+
     
     useEffect(() => {
         const fetchPokemon = async () => {
@@ -30,13 +39,18 @@ export function usePokemonList() {
             setError(null);
             try {
                 if (pokeSearch) {
-                    const data = await getPokemon(pokeSearch)
-                    setPokemon(data);
-                    const pokemonData: PokemonListItem[] = [{name: pokemon[0].name, url: "https://pokeapi.co/api/v2/pokemon/"+pokemon[0].id }]
-                    setPokeState(pokemonData)
+                    try {
+                        const pokeData = await getPokemon(pokeSearch)
+                        const pokeId = pokeData[0].id
+                        navigate(`/pokedex/${pokeId}`)
+                    } catch (err) {
+                        setErrorMessage(true)
+                    }
                 } else {
                 const data = await getPokemonList({type: pokeType});
-                setPokeState(data);}
+                setPokeState(data);
+                setSearchParams({"type": pokeType})
+            }
                 }
             catch (err) {
                 console.error("the error!", err)
@@ -48,7 +62,7 @@ export function usePokemonList() {
         fetchPokemon()
     }, [pokeType, pokeSearch, refetchCount])
 
-    return { pokeState, isLoading, error, pokeType, setPokeType, searchInput, setSearchInput, pokeSearch, setPokeSearch, handleSearchChange, refetch };
+    return { pokeState, isLoading, error, pokeType, setPokeType, searchInput, setSearchInput, pokeSearch, setPokeSearch, handleSearchChange, refetch, errorMessage };
 
 }
   

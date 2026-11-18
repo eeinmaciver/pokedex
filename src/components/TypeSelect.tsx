@@ -6,7 +6,7 @@ interface typeListProps {
     onChange: (value: string) => void
     }
 
-export default function(props: typeListProps) {
+export default function TypeSelect (props: typeListProps) {
     const { onChange, type} = props
     return (
         <select value={type} onChange={(event) => onChange(event.target.value)}>
