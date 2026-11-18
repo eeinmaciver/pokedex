@@ -1,4 +1,3 @@
-import NavLinks from "../components/NavLink";
 import Pokedex from "../components/Pokedex/Pokedex";
 
 

@@ -36,7 +36,7 @@ export default function PokemonPage() {
             </h2>
             <img src={"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +p.id+ ".png"} alt="Pokemon picture"/>
             <p>
-                Weight: {p.weight}, Height; {p.height}, Types: {p.typeList.toString()}
+                Weight: {p.weight / 10}kg, Height; {p.height / 10}m, Types: {p.typeList.toString()}
             </p>
         </>
     )

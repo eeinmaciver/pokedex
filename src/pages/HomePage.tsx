@@ -1,5 +1,3 @@
-import NavLinks from "../components/NavLink"
-
 
 export default function HomePage () {
 

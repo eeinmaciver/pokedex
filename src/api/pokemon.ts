@@ -1,4 +1,3 @@
-import TypeSelect from "../components/TypeSelect";
 import { type PokemonListItem } from "../types";
 import { apiGet } from "./client";
 

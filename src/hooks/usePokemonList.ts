@@ -1,24 +1,22 @@
 import { useState, useEffect } from "react";
 import { type PokemonListItem } from "../types";
 import { getPokemon, getPokemonList } from "../api/pokemon";
-import { type PokemonFetch } from "../api/pokemon";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router"
 
 export function usePokemonList() {
     const [pokeState, setPokeState] = useState<PokemonListItem[]>([]);
-    const [pokemon, setPokemon] = useState<PokemonFetch[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>();
-    const [pokeType, setPokeType] = useState<string>("")
     const [refetchCount, setRefetchCount] = useState(0);
     const [searchInput, setSearchInput] = useState<string | number>("");
     const [pokeSearch, setPokeSearch] = useState<string | number>("");
-    const navigate = useNavigate();
-    const [errorMessage, setErrorMessage] = useState<true | false>(false);
-
+    const [errorMessage, setErrorMessage] = useState<boolean>(false);
     const [searchParams, setSearchParams] =  useSearchParams();
-    const type = searchParams.get("type") ?? "all types";
+
+    const navigate = useNavigate();
+    const pokeType = searchParams.get("type") ?? "";
+    const pokeSort = searchParams.get("sort") ?? "Number";
 
     const refetch = () => {
         setRefetchCount((count) => count + 1);
@@ -31,6 +29,26 @@ export function usePokemonList() {
         }
     };
 
+    const handleTypeChange = (value: string) => {
+        const newSearchParams = new URLSearchParams(searchParams);
+        if (value === "") {
+            newSearchParams.delete("type");
+        } else {
+            newSearchParams.set("type", value);
+        }
+        setSearchParams(newSearchParams);
+    };
+
+    const handleSortChange = (value: string) => {
+        const newSearchParams = new URLSearchParams(searchParams);
+        console.log(newSearchParams.toString())
+        if (value === "number") {
+            newSearchParams.delete("sort");
+        } else {
+            newSearchParams.set("sort", value);
+        }
+        setSearchParams(newSearchParams);
+    }
 
     
     useEffect(() => {
@@ -48,8 +66,18 @@ export function usePokemonList() {
                     }
                 } else {
                 const data = await getPokemonList({type: pokeType});
+                if (pokeSort === "name") {
+                    data.sort((a, b) => {
+                        if (a.name < b.name) {
+                            return -1;
+                            }
+                        if (a.name > b.name) {
+                            return 1;
+                            }
+                            return 0;
+                        }
+                    )}
                 setPokeState(data);
-                setSearchParams({"type": pokeType})
             }
                 }
             catch (err) {
@@ -60,9 +88,9 @@ export function usePokemonList() {
             }
         }
         fetchPokemon()
-    }, [pokeType, pokeSearch, refetchCount])
+    }, [pokeType, pokeSearch, pokeSort,  refetchCount])
 
-    return { pokeState, isLoading, error, pokeType, setPokeType, searchInput, setSearchInput, pokeSearch, setPokeSearch, handleSearchChange, refetch, errorMessage };
+    return { pokeState, isLoading, error, pokeType, pokeSort, handleSortChange, handleTypeChange, searchInput, setSearchInput, pokeSearch, setPokeSearch, handleSearchChange, refetch, errorMessage };
 
 }
   

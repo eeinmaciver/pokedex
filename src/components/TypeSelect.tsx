@@ -9,8 +9,11 @@ interface typeListProps {
 export default function TypeSelect (props: typeListProps) {
     const { onChange, type} = props
     return (
-        <select value={type} onChange={(event) => onChange(event.target.value)}>
-            {pokemonTypeList.map((type) => <option key={type} value={type}>{type ? type : "all types"}</option>)}
-        </select>
+        <label>
+            Select type:
+            <select value={type} onChange={(event) => onChange(event.target.value)}>
+                {pokemonTypeList.map((type) => <option key={type} value={type}>{type ? type : "all types"}</option>)}
+            </select>
+        </label>
     )
 }
