@@ -6,7 +6,7 @@ import TypeSelect from "../TypeSelect"
 
 export default function Pokedex() {
 
-    const  { pokeState, isLoading, error, pokeType, pokeSort, handleSortChange, searchInput, handleTypeChange, setPokeSearch, refetch, handleSearchChange, errorMessage} = usePokemonList()
+    const  { pokeState, isLoading, error, pokeType, pokeSort, handleSortChange, searchInput, handleTypeChange, setPokeSearch, refetch, setSearchInput, errorMessage} = usePokemonList()
     
     
     if( isLoading) return <p>Loading Pokemon...</p>
@@ -17,7 +17,7 @@ export default function Pokedex() {
     if (pokeState.length === 0) return <p>No Pokemon...</p>
 
     return (
-        <>  <SearchBox value={searchInput} onChange={handleSearchChange} onSubmit={setPokeSearch} error={errorMessage}/>
+        <>  <SearchBox value={searchInput} onChange={setSearchInput} onSubmit={setPokeSearch} error={errorMessage} label="Find a Pokémon by name or number"/>
             < Sort sort={pokeSort} onChange={handleSortChange} />
             <TypeSelect type={pokeType} onChange={handleTypeChange} />
             <PokemonGrid pokemon={pokeState} />

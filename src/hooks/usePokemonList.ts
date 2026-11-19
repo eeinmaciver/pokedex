@@ -11,7 +11,7 @@ export function usePokemonList() {
     const [refetchCount, setRefetchCount] = useState(0);
     const [searchInput, setSearchInput] = useState<string | number>("");
     const [pokeSearch, setPokeSearch] = useState<string | number>("");
-    const [errorMessage, setErrorMessage] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>("");
     const [searchParams, setSearchParams] =  useSearchParams();
 
     const navigate = useNavigate();
@@ -20,13 +20,6 @@ export function usePokemonList() {
 
     const refetch = () => {
         setRefetchCount((count) => count + 1);
-    };
-
-    const handleSearchChange = (value: string | number) => {
-        setSearchInput(value);
-        if (value === "") {
-            setPokeSearch("");
-        }
     };
 
     const handleTypeChange = (value: string) => {
@@ -61,7 +54,7 @@ export function usePokemonList() {
                         const pokeId = pokeData[0].id
                         navigate(`/pokedex/${pokeId}`)
                     } catch (err) {
-                        setErrorMessage(true)
+                        setErrorMessage("Name not found")
                     }
                 } else {
                 const data = await getPokemonList({type: pokeType});
@@ -89,7 +82,7 @@ export function usePokemonList() {
         fetchPokemon()
     }, [pokeType, pokeSearch, pokeSort,  refetchCount])
 
-    return { pokeState, isLoading, error, pokeType, pokeSort, handleSortChange, handleTypeChange, searchInput, setSearchInput, pokeSearch, setPokeSearch, handleSearchChange, refetch, errorMessage };
+    return { pokeState, isLoading, error, pokeType, pokeSort, handleSortChange, handleTypeChange, searchInput, setSearchInput, pokeSearch, setPokeSearch, refetch, errorMessage };
 
 }
   

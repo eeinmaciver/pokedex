@@ -11,28 +11,31 @@ export default function useTeam(user_id: number) {
     const [error, setError] = useState<string | null>();
     const [refetchCount, setRefetchCount] = useState(0);
     const [team, setTeam] = useState<TeamMember[]>([]);
-    const [searchInput, setSearchInput] = useState<string | number>("");
-    const [pokeSearch, setPokeSearch] = useState<string | number>("");
-    const [errorMessage, setErrorMessage] = useState<boolean>(false);
+    const [addInput, setAddInput] = useState<string | number>("");
+    const [addSearch, setAddSearch] = useState<string | number>("");
+    const [addErrorMessage, setAddErrorMessage] = useState<string>("");
 
-    const [deleteInput, setDeleteInput] = useState<string | number>("");
-    const [deleteSearch, setDeleteSearch] = useState<string | number>("");
+    const [delInput, setDelInput] = useState<string | number>("");
+    const [delSearch, setDelSearch] = useState<string | number>("");
+    const [delErrorMessage, setDelErrorMessage] = useState<string>("");
 
     const refetch = () => {
         setRefetchCount((count) => count + 1);
     };
 
-    const handleSearchChange = (value: string | number) => {
-        setSearchInput(value);
+    const handleAddInputChange = (value: string | number) => {
+        setAddInput(value);
+        setAddErrorMessage("");
         if (value === "") {
-            setPokeSearch("");
+            setAddSearch("");
         }
     };
 
-    const handleDeleteSearchChange = (value: string | number) => {
-        setDeleteInput(value);
+    const handleDelInputChange = (value: string | number) => {
+        setDelInput(value);
+        setDelErrorMessage("");
         if (value === "") {
-            setDeleteSearch("");
+            setDelSearch("");
         }
     };
 
@@ -41,40 +44,48 @@ export default function useTeam(user_id: number) {
         const fetchPokemon = async () => {
             setIsLoading(true);
             setError(null);
-            setPokeSearch("")
-            setDeleteSearch("")
+            setAddSearch("");
+            setDelSearch("");
+
             try {
-                const data = await getTeam(user_id)
-                setTeam(data);
-                if (pokeSearch) {
+                console.time("getTeam");
+                const pokemonTeam = await getTeam(user_id);
+                console.timeEnd("getTeam");
+                setTeam(pokemonTeam);
+                if (addSearch) {
                     try {
-                        const pokemon = await getPokemon(pokeSearch)
+                        console.time("add getPokemon");
+                        const pokemon = await getPokemon(addSearch);
+                        console.timeEnd("add getPokemon");
                         await addToTeam(user_id, {pokemon_id: pokemon[0].id, pokemon_name: pokemon[0].name})
-                        
                         refetch()
                     } catch (err) {
                         console.error("the error!", err)
-                        setError(err instanceof TeamError ? err.code :"Something Went Wrong") 
-                }
-                if (deleteSearch) {
-                    try {
-                        const pokemon = await getTeam(user_id)
-                        console.log(pokemon)
-                        const pokeMap = pokemon.map((p) => p.pokemon_name === deleteSearch ? p.id: null)
-                        console.log(pokeMap)
-                        if (pokeMap.every((item) => item === null)) {
-                            throw new ApiError("Team member not found", 404)
+                        setAddErrorMessage(err instanceof TeamError ? err.message : "Pokemon not found") 
                         }
-                        const id = pokeMap.find((item) => item !== null)
-                        console.log(id)
-                        await removeFromTeam(user_id, id!)
-                        refetch()
-                    } catch (err) {
-                        console.error("the error!", err)
-                        setError(err instanceof TeamError ? err.code :"Something Went Wrong")                         
-                    }
                 }
-            }}
+                if (delSearch) {
+                    try {
+                        console.time("delete getPokemon");
+                        const pokemon = await getPokemon(delSearch);
+                        console.timeEnd("delete getPokemon");
+                        const teamMember = pokemonTeam.find((p) => 
+                            p.pokemon_name === pokemon[0].name || p.pokemon_id === pokemon[0].id
+                        );
+                        if (!teamMember) {
+                            setDelErrorMessage("This Pokémon is not on your team")
+                        } else {
+                            await removeFromTeam(user_id, teamMember.id)
+                            refetch()
+                        }
+
+                    } catch (err) {
+                        console.timeEnd("delete getPokemon")
+                        console.error("the error!", err)
+                        setDelErrorMessage(err instanceof TeamError ? err.message : "Pokémon not found")                         
+                        }
+                }
+            }
             catch (err) {
                 console.error("the error!", err)
                 setError(err instanceof Error ? err.message : "SOMETHING WENT WRONG") 
@@ -83,9 +94,9 @@ export default function useTeam(user_id: number) {
             }
         }
         fetchPokemon()
-    }, [user_id, pokeSearch, refetchCount, deleteSearch])
+    }, [user_id, addSearch, refetchCount, delSearch])
 
 
-    return { team, isLoading, error, refetch, handleSearchChange, pokeSearch, searchInput, setSearchInput, setPokeSearch, errorMessage, handleDeleteSearchChange, deleteInput, setDeleteSearch };
+    return { team, isLoading, error, refetch, addSearch, addInput, handleAddInputChange, setAddSearch, addErrorMessage, delErrorMessage, delInput, handleDelInputChange, setDelSearch };
 
 }
