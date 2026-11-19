@@ -41,7 +41,6 @@ export function usePokemonList() {
 
     const handleSortChange = (value: string) => {
         const newSearchParams = new URLSearchParams(searchParams);
-        console.log(newSearchParams.toString())
         if (value === "number") {
             newSearchParams.delete("sort");
         } else {
