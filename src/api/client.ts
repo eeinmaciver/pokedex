@@ -42,8 +42,14 @@ export const apiPost = async <T>(
     });
 
     if (!response.ok) {
-        throw new ApiError(`Request failed with status ${response.status}`, response.status,);
-    }
+      const data = await response.json()
+            if (data.detail === "Your team is full.") {
+                throw new TeamError("Your team is full", "full")
+            }
+            if (data.detail === "That Pokémon is already on your team.") {
+                throw new TeamError("That Pokémon is already on your team", "duplicate")
+            }
+        }
     return (await response.json()) as T;
 };
 

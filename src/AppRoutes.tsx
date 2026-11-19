@@ -6,6 +6,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import Layout from "./pages/Layout";
 import PokemonPage from "./pages/PokemonPage";
 import Random from "./pages/Random";
+import TeamPage from "./pages/TeamPage";
 
 export default function AppRoutes() {
 
@@ -15,6 +16,7 @@ export default function AppRoutes() {
                 <Route index element={<HomePage />} />
                 <Route path="pokedex" element={<PokedexPage />} />
                 <Route path="pokedex/:pokemonId" element={<PokemonPage />}/>
+                <Route path="team/:teamId" element={<TeamPage />}/>
                 <Route path="pokedex/random" element={<Random/>}/>
                 <Route path="*" element={<NotFoundPage />} />
             </Route>

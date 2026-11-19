@@ -16,14 +16,7 @@ export const addToTeam = (user_id: number, member: NewTeamMember): Promise<TeamM
             import.meta.env.VITE_TEAM_API_URL, `/public/users/${user_id}/team`, member
         )
     } catch (err) {
-        if (err instanceof ApiError) {
-            if (err.message.includes("Your team is full")) {
-                throw new TeamError("Your team is full", "full")
-            }
-            if (err.message.includes("That Pokémon is already on your team")) {
-                throw new TeamError("That Pokémon is already on your team", "duplicate")
-            }
-        }
+        
         throw new TeamError("Could not reach the team server", "unavailable")
     }
 };
