@@ -14,6 +14,8 @@ export default function Layout () {
             <header>
                 <h1>PokemonAPI</h1>
                 {userState.status === "success" && <p>{userState.user.email}</p>}
+                {userState.status === "error" && <p>{userState.message}</p>}
+                {userState.status === "anonymous" && <p>Not Logged In</p>}
                 <ThemeToggle/>
                     <ul>
                         <li>

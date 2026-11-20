@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createContext, useContext } from "react";
 import { type ReactNode } from "react";
 import fetchCurrentUser from "../api/auth";
 import { type User } from "../api/auth";
-import { writeToken } from "../token/tokenStorage";
+import { readToken, writeToken } from "../token/tokenStorage";
 
 type UserState =
     | { status: "loading" }
@@ -29,31 +29,43 @@ export default function useUserContext() {
     if (!context) {
         throw new Error("useUserContext must be used within a UserProvider");
     }
-
     return context;
 
 }
 
 export function UserProvider({ children }: {children: ReactNode}) {
-
     const [userState, setUserState] = useState<UserState>({status: "loading"})
 
+    // check if token exists. If exists, status is sucfcess, if not, status is anonymous
+    useEffect(() => {
+        const checkToken = async () => {
+            const token = readToken()
+            if (token) {
+                const user = await fetchCurrentUser(token)
+                setUserState({ status: "success", user})
+            } else {
+            setUserState({ status: "anonymous"})}
+        }
+        checkToken()
+    }, [])
+
     async function login (email: string, password: string): Promise<void> { 
+        const response = await fetch(`${import.meta.env.VITE_TEAM_API_URL}/auth/login`
+        , {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, password}),
+        });
+        if (response.status === 401) {
+            setUserState({ status: "error", message: "Invalid Login Details"})
+            throw new Error("Invalid Login Details")
+        }
 
-    const response = await fetch(`${import.meta.env.VITE_TEAM_API_URL}/auth/login`
-    , {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, password}),
-    });
-
-    const token: Token = await response.json()
-    console.log(token)
-    const user = await fetchCurrentUser(token.access_token)
-    console.log(user)
-    writeToken(token.access_token)
-    setUserState({status: "success", user})
-}
+        const token: Token = await response.json()
+        const user = await fetchCurrentUser(token.access_token)
+        writeToken(token.access_token)
+        setUserState({status: "success", user})
+    }
 
     return (
         <UserContext.Provider value={{userState, login}}>{children}</UserContext.Provider>
