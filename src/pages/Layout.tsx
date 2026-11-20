@@ -4,6 +4,7 @@ import ThemeToggle from "../components/ThemeToggle"
 import { useTheme } from "../contexts/ThemeContext"
 import LoginForm from "../LoginForm"
 import useUserContext from "../contexts/UserContext"
+import LogOut from "../components/LogOut"
 
 export default function Layout () {
     const { theme } = useTheme()
@@ -22,7 +23,8 @@ export default function Layout () {
                             <NavLinks/>
                         </li>
                     </ul>
-                <LoginForm/>
+                {userState.status !== "success" && <LoginForm/>}
+                {userState.status === "success" && <LogOut/>}
             </header>
 
             <main>

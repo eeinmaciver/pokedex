@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 import { type ReactNode } from "react";
 import fetchCurrentUser from "../api/auth";
 import { type User } from "../api/auth";
-import { readToken, writeToken } from "../token/tokenStorage";
+import { clearToken, readToken, writeToken } from "../token/tokenStorage";
 
 type UserState =
     | { status: "loading" }
@@ -14,6 +14,7 @@ type UserState =
 interface UserContextValue {
     userState: UserState;
     login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>
 }
 
 interface Token {
@@ -66,9 +67,13 @@ export function UserProvider({ children }: {children: ReactNode}) {
         writeToken(token.access_token)
         setUserState({status: "success", user})
     }
+    async function logout(): Promise<void> {
+    clearToken()
+    setUserState({status: "anonymous"})
+}
 
     return (
-        <UserContext.Provider value={{userState, login}}>{children}</UserContext.Provider>
+        <UserContext.Provider value={{userState, login, logout}}>{children}</UserContext.Provider>
     )
 }
 

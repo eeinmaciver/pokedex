@@ -6,8 +6,6 @@ import type { SubmitEvent } from "react";
 export default function LoginForm(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [isSubmitting, SetIsSumitting] = useState(false);
 
     const {login} = useUserContext();
 
@@ -41,6 +39,7 @@ export default function LoginForm(){
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} />
                 <button type="submit">Login</button>
+                {/* <button type="submit">Register</button> */}
             </form>
         </div>
     );
