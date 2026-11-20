@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { addToTeam, getTeam, removeFromTeam } from "../api/team";
 import { type TeamMember } from "../types";
 import { getPokemon } from "../api/pokemon";
-import { ApiError, TeamError } from "../api/client";
+import { TeamError } from "../api/client";
 
 
 
@@ -48,15 +48,12 @@ export default function useTeam(user_id: number) {
             setDelSearch("");
 
             try {
-                console.time("getTeam");
                 const pokemonTeam = await getTeam(user_id);
-                console.timeEnd("getTeam");
                 setTeam(pokemonTeam);
                 if (addSearch) {
                     try {
-                        console.time("add getPokemon");
+
                         const pokemon = await getPokemon(addSearch);
-                        console.timeEnd("add getPokemon");
                         await addToTeam(user_id, {pokemon_id: pokemon[0].id, pokemon_name: pokemon[0].name})
                         refetch()
                     } catch (err) {
@@ -66,9 +63,7 @@ export default function useTeam(user_id: number) {
                 }
                 if (delSearch) {
                     try {
-                        console.time("delete getPokemon");
                         const pokemon = await getPokemon(delSearch);
-                        console.timeEnd("delete getPokemon");
                         const teamMember = pokemonTeam.find((p) => 
                             p.pokemon_name === pokemon[0].name || p.pokemon_id === pokemon[0].id
                         );
@@ -80,7 +75,6 @@ export default function useTeam(user_id: number) {
                         }
 
                     } catch (err) {
-                        console.timeEnd("delete getPokemon")
                         console.error("the error!", err)
                         setDelErrorMessage(err instanceof TeamError ? err.message : "Pokémon not found")                         
                         }

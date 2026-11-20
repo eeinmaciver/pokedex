@@ -1,4 +1,4 @@
-import { apiDelete, ApiError, apiGet, apiPost, TeamError } from "./client";
+import { apiDelete, apiGet, apiPost, TeamError } from "./client";
 import { type NewTeamMember } from "../types";
 import type { TeamMember } from "../types";
 
